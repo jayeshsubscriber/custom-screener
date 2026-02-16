@@ -1,0 +1,12 @@
+---
+description: Use Shadcn UI with purple theme; do not reference prototype.html
+globs: "**/*.tsx,**/*.ts,**/*.css"
+alwaysApply: true
+---
+
+# UI & Design Rules
+
+- **Use strictly Shadcn UI components** for all UI. Add new components from the Shadcn registry (e.g. `pnpm dlx shadcn@latest add <component>`) when needed.
+- **Light theme only**: Do not use dark theme. Backgrounds are white/light gray; text is dark. Theme variables are in `src/index.css`.
+- **Purple brand color**: `#542087` (HSL 270 62% 33%). Use this for primary, ring, and accent. Do not change to a different primary color palette.
+- **Do not reference or copy from `prototype.html`**. This app is independent; designs and patterns must come from Shadcn UI and the purple theme above, not from the prototype file.

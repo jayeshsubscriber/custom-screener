@@ -1,0 +1,2149 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Upstox Trade Scanner - UI Prototypes</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+<style>
+  :root {
+    --upstox-purple: #6C3FE4;
+    --upstox-purple-light: #8B6AE8;
+    --upstox-purple-dark: #5232B5;
+    --upstox-green: #00C853;
+    --upstox-green-bg: rgba(0, 200, 83, 0.1);
+    --upstox-red: #FF1744;
+    --upstox-red-bg: rgba(255, 23, 68, 0.1);
+    --upstox-orange: #FF9100;
+    --upstox-orange-bg: rgba(255, 145, 0, 0.1);
+    --upstox-blue: #2979FF;
+    --upstox-blue-bg: rgba(41, 121, 255, 0.1);
+    --bg-primary: #0D0D12;
+    --bg-secondary: #16161F;
+    --bg-card: #1C1C28;
+    --bg-card-hover: #222230;
+    --bg-elevated: #252535;
+    --text-primary: #FFFFFF;
+    --text-secondary: #A0A0B8;
+    --text-tertiary: #6C6C80;
+    --border-color: #2A2A3A;
+    --border-subtle: #1F1F2E;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    font-family: 'Inter', -apple-system, sans-serif;
+    background: #0A0A0F;
+    color: var(--text-primary);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    min-height: 100vh;
+    padding: 20px;
+  }
+
+  /* === OPTION SELECTOR BAR (top of page) === */
+  .option-selector {
+    position: sticky;
+    top: 0;
+    z-index: 1000;
+    background: var(--bg-secondary);
+    border: 1px solid var(--border-color);
+    border-radius: 16px;
+    padding: 12px 16px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 24px;
+    max-width: 800px;
+    width: 100%;
+    flex-wrap: wrap;
+    justify-content: center;
+  }
+
+  .option-selector label {
+    font-size: 13px;
+    color: var(--text-secondary);
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+  }
+
+  .option-btn {
+    padding: 8px 18px;
+    border-radius: 10px;
+    border: 1px solid var(--border-color);
+    background: transparent;
+    color: var(--text-secondary);
+    font-family: 'Inter', sans-serif;
+    font-size: 13px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.2s;
+  }
+
+  .option-btn.active {
+    background: var(--upstox-purple);
+    color: white;
+    border-color: var(--upstox-purple);
+  }
+
+  .option-btn:hover:not(.active) {
+    border-color: var(--upstox-purple-light);
+    color: var(--text-primary);
+  }
+
+  /* === PHONE FRAME === */
+  .phone-frame {
+    width: 390px;
+    height: 844px;
+    background: var(--bg-primary);
+    border-radius: 44px;
+    border: 3px solid #333;
+    overflow: hidden;
+    position: relative;
+    box-shadow: 0 20px 60px rgba(0,0,0,0.5), inset 0 0 0 1px rgba(255,255,255,0.05);
+  }
+
+  .phone-notch {
+    width: 160px;
+    height: 34px;
+    background: #000;
+    border-radius: 0 0 20px 20px;
+    margin: 0 auto;
+    position: relative;
+    z-index: 100;
+  }
+
+  .phone-content {
+    height: calc(100% - 34px);
+    overflow-y: auto;
+    overflow-x: hidden;
+    -webkit-overflow-scrolling: touch;
+    scrollbar-width: none;
+  }
+
+  .phone-content::-webkit-scrollbar { display: none; }
+
+  /* === DESIGN OPTION SCREENS === */
+  .design-option { display: none; }
+  .design-option.active { display: block; }
+
+  /* =========================================
+     OPTION A: TAB-BASED SCANNER
+     ========================================= */
+  .optA-header {
+    padding: 16px 20px 0;
+    background: var(--bg-primary);
+    position: sticky;
+    top: 0;
+    z-index: 10;
+  }
+
+  .optA-title-row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 16px;
+  }
+
+  .optA-title {
+    font-size: 20px;
+    font-weight: 700;
+  }
+
+  .optA-title span { color: var(--upstox-purple-light); }
+
+  .optA-icons { display: flex; gap: 16px; }
+  .optA-icons i { color: var(--text-secondary); font-size: 18px; }
+
+  /* Tabs */
+  .optA-tabs {
+    display: flex;
+    gap: 0;
+    border-bottom: 1px solid var(--border-color);
+  }
+
+  .optA-tab {
+    flex: 1;
+    text-align: center;
+    padding: 10px 0 12px;
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--text-tertiary);
+    cursor: pointer;
+    position: relative;
+    transition: color 0.2s;
+  }
+
+  .optA-tab.active {
+    color: var(--upstox-purple-light);
+  }
+
+  .optA-tab.active::after {
+    content: '';
+    position: absolute;
+    bottom: -1px;
+    left: 20%;
+    width: 60%;
+    height: 2px;
+    background: var(--upstox-purple);
+    border-radius: 2px;
+  }
+
+  .optA-tab .tab-count {
+    font-size: 10px;
+    background: var(--upstox-purple);
+    color: white;
+    padding: 1px 6px;
+    border-radius: 8px;
+    margin-left: 4px;
+    font-weight: 700;
+  }
+
+  /* Filters */
+  .optA-filters {
+    display: flex;
+    gap: 8px;
+    padding: 14px 20px;
+    overflow-x: auto;
+    scrollbar-width: none;
+  }
+
+  .optA-filters::-webkit-scrollbar { display: none; }
+
+  .optA-chip {
+    padding: 7px 14px;
+    border-radius: 20px;
+    font-size: 12px;
+    font-weight: 500;
+    white-space: nowrap;
+    cursor: pointer;
+    border: 1px solid var(--border-color);
+    color: var(--text-secondary);
+    background: var(--bg-secondary);
+    transition: all 0.2s;
+  }
+
+  .optA-chip.active {
+    background: rgba(108, 63, 228, 0.15);
+    border-color: var(--upstox-purple);
+    color: var(--upstox-purple-light);
+  }
+
+  .optA-chip i { margin-right: 4px; }
+
+  /* Summary bar */
+  .optA-summary {
+    padding: 0 20px 10px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+
+  .optA-summary-text {
+    font-size: 12px;
+    color: var(--text-tertiary);
+  }
+
+  .optA-summary-text strong { color: var(--text-secondary); }
+
+  .optA-sort {
+    font-size: 12px;
+    color: var(--upstox-purple-light);
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    cursor: pointer;
+  }
+
+  /* Opportunity Cards */
+  .optA-cards { padding: 0 16px 100px; }
+
+  .optA-card {
+    background: var(--bg-card);
+    border-radius: 14px;
+    padding: 16px;
+    margin-bottom: 10px;
+    border: 1px solid var(--border-subtle);
+    transition: all 0.15s;
+    cursor: pointer;
+  }
+
+  .optA-card:active { transform: scale(0.98); background: var(--bg-card-hover); }
+
+  .optA-card-top {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    margin-bottom: 10px;
+  }
+
+  .optA-stock-info { display: flex; align-items: center; gap: 10px; }
+
+  .optA-stock-logo {
+    width: 36px;
+    height: 36px;
+    border-radius: 10px;
+    background: var(--bg-elevated);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 14px;
+    font-weight: 700;
+    color: var(--upstox-purple-light);
+  }
+
+  .optA-stock-name {
+    font-size: 14px;
+    font-weight: 700;
+  }
+
+  .optA-stock-price {
+    font-size: 12px;
+    color: var(--text-secondary);
+    margin-top: 2px;
+  }
+
+  .optA-stock-change {
+    font-size: 12px;
+    font-weight: 600;
+    padding: 4px 8px;
+    border-radius: 6px;
+  }
+
+  .optA-stock-change.green { color: var(--upstox-green); background: var(--upstox-green-bg); }
+  .optA-stock-change.red { color: var(--upstox-red); background: var(--upstox-red-bg); }
+
+  .optA-confidence {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin-bottom: 12px;
+  }
+
+  .optA-confidence-bar {
+    flex: 1;
+    height: 4px;
+    background: var(--bg-elevated);
+    border-radius: 4px;
+    overflow: hidden;
+  }
+
+  .optA-confidence-fill {
+    height: 100%;
+    border-radius: 4px;
+    transition: width 0.3s;
+  }
+
+  .optA-confidence-label {
+    font-size: 11px;
+    font-weight: 700;
+    white-space: nowrap;
+  }
+
+  .confidence-high { color: var(--upstox-green); }
+  .confidence-high .optA-confidence-fill { background: var(--upstox-green); }
+  .confidence-med { color: var(--upstox-orange); }
+  .confidence-med .optA-confidence-fill { background: var(--upstox-orange); }
+
+  .optA-signal-tags {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+    margin-bottom: 12px;
+  }
+
+  .optA-signal-tag {
+    font-size: 10px;
+    font-weight: 600;
+    padding: 3px 8px;
+    border-radius: 6px;
+    letter-spacing: 0.3px;
+  }
+
+  .tag-momentum { background: rgba(41, 121, 255, 0.12); color: #5C9EFF; }
+  .tag-breakout { background: rgba(0, 200, 83, 0.12); color: #4ADE80; }
+  .tag-candle { background: rgba(255, 145, 0, 0.12); color: #FFB84D; }
+  .tag-pattern { background: rgba(168, 85, 247, 0.12); color: #C084FC; }
+  .tag-volume { background: rgba(236, 72, 153, 0.12); color: #F472B6; }
+  .tag-rsi { background: rgba(34, 211, 238, 0.12); color: #22D3EE; }
+
+  .optA-levels {
+    display: flex;
+    gap: 0;
+    background: var(--bg-secondary);
+    border-radius: 10px;
+    overflow: hidden;
+  }
+
+  .optA-level {
+    flex: 1;
+    text-align: center;
+    padding: 8px 0;
+    border-right: 1px solid var(--border-subtle);
+  }
+
+  .optA-level:last-child { border-right: none; }
+
+  .optA-level-label {
+    font-size: 10px;
+    color: var(--text-tertiary);
+    margin-bottom: 3px;
+  }
+
+  .optA-level-val {
+    font-size: 13px;
+    font-weight: 700;
+  }
+
+  .optA-level-val.green { color: var(--upstox-green); }
+  .optA-level-val.red { color: var(--upstox-red); }
+
+  /* =========================================
+     OPTION B: SIGNAL FEED
+     ========================================= */
+  .optB-header {
+    padding: 16px 20px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    background: var(--bg-primary);
+    position: sticky;
+    top: 0;
+    z-index: 10;
+  }
+
+  .optB-title {
+    font-size: 18px;
+    font-weight: 700;
+  }
+
+  .optB-live-dot {
+    width: 8px;
+    height: 8px;
+    background: var(--upstox-green);
+    border-radius: 50%;
+    display: inline-block;
+    margin-right: 6px;
+    animation: pulse 2s infinite;
+  }
+
+  @keyframes pulse {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0.3; }
+  }
+
+  .optB-live-text {
+    font-size: 11px;
+    color: var(--upstox-green);
+    font-weight: 600;
+  }
+
+  /* Strategy pills */
+  .optB-strategies {
+    padding: 0 20px 12px;
+    display: flex;
+    gap: 8px;
+    overflow-x: auto;
+    scrollbar-width: none;
+  }
+
+  .optB-strategies::-webkit-scrollbar { display: none; }
+
+  .optB-strategy-pill {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    padding: 8px 14px;
+    border-radius: 12px;
+    background: var(--bg-card);
+    border: 1px solid var(--border-subtle);
+    white-space: nowrap;
+    cursor: pointer;
+    transition: all 0.2s;
+  }
+
+  .optB-strategy-pill.active {
+    background: linear-gradient(135deg, rgba(108, 63, 228, 0.2), rgba(108, 63, 228, 0.05));
+    border-color: var(--upstox-purple);
+  }
+
+  .optB-strategy-pill i { font-size: 14px; }
+  .optB-strategy-pill span { font-size: 12px; font-weight: 600; }
+
+  /* Signal Cards - Feed style */
+  .optB-feed { padding: 0 16px 100px; }
+
+  .optB-signal-card {
+    background: var(--bg-card);
+    border-radius: 16px;
+    margin-bottom: 12px;
+    border: 1px solid var(--border-subtle);
+    overflow: hidden;
+    cursor: pointer;
+    transition: all 0.15s;
+  }
+
+  .optB-signal-card:active { transform: scale(0.98); }
+
+  .optB-signal-top {
+    padding: 14px 16px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+
+  .optB-signal-badge {
+    font-size: 10px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.8px;
+    padding: 4px 10px;
+    border-radius: 6px;
+  }
+
+  .badge-bullish { background: var(--upstox-green-bg); color: var(--upstox-green); }
+  .badge-bearish { background: var(--upstox-red-bg); color: var(--upstox-red); }
+
+  .optB-signal-time {
+    font-size: 11px;
+    color: var(--text-tertiary);
+  }
+
+  .optB-signal-body { padding: 0 16px 14px; }
+
+  .optB-signal-stock-row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 10px;
+  }
+
+  .optB-signal-stock-left { display: flex; align-items: center; gap: 10px; }
+
+  .optB-signal-logo {
+    width: 40px;
+    height: 40px;
+    border-radius: 12px;
+    background: var(--bg-elevated);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: 700;
+    font-size: 14px;
+  }
+
+  .optB-signal-stock-name { font-size: 16px; font-weight: 700; }
+  .optB-signal-stock-sector { font-size: 11px; color: var(--text-tertiary); }
+
+  .optB-signal-price-area { text-align: right; }
+  .optB-signal-price { font-size: 16px; font-weight: 700; }
+  .optB-signal-change { font-size: 12px; font-weight: 600; }
+
+  /* Confidence meter */
+  .optB-confidence-meter {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 10px 14px;
+    background: var(--bg-secondary);
+    border-radius: 10px;
+    margin-bottom: 12px;
+  }
+
+  .optB-meter-ring {
+    width: 48px;
+    height: 48px;
+    position: relative;
+  }
+
+  .optB-meter-ring svg {
+    transform: rotate(-90deg);
+    width: 48px;
+    height: 48px;
+  }
+
+  .optB-meter-ring circle {
+    fill: none;
+    stroke-width: 4;
+    cx: 24;
+    cy: 24;
+    r: 20;
+  }
+
+  .optB-meter-bg { stroke: var(--bg-elevated); }
+
+  .optB-meter-fill {
+    stroke-linecap: round;
+    transition: stroke-dashoffset 0.5s;
+  }
+
+  .optB-meter-value {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    font-size: 13px;
+    font-weight: 800;
+  }
+
+  .optB-meter-detail { flex: 1; }
+
+  .optB-meter-label {
+    font-size: 11px;
+    color: var(--text-tertiary);
+    margin-bottom: 4px;
+  }
+
+  .optB-meter-factors {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 4px;
+  }
+
+  .optB-factor-dot {
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    display: inline-block;
+  }
+
+  .optB-factor-name {
+    font-size: 11px;
+    color: var(--text-secondary);
+    font-weight: 500;
+  }
+
+  /* Signal trade levels */
+  .optB-trade-levels {
+    display: flex;
+    gap: 8px;
+  }
+
+  .optB-trade-level {
+    flex: 1;
+    padding: 8px;
+    border-radius: 8px;
+    text-align: center;
+    background: var(--bg-secondary);
+  }
+
+  .optB-trade-level-label {
+    font-size: 9px;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    color: var(--text-tertiary);
+    margin-bottom: 3px;
+  }
+
+  .optB-trade-level-val {
+    font-size: 13px;
+    font-weight: 700;
+  }
+
+  /* Signal action bar */
+  .optB-signal-actions {
+    display: flex;
+    border-top: 1px solid var(--border-subtle);
+  }
+
+  .optB-action-btn {
+    flex: 1;
+    padding: 11px;
+    text-align: center;
+    font-size: 12px;
+    font-weight: 600;
+    color: var(--text-secondary);
+    cursor: pointer;
+    transition: all 0.15s;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 6px;
+  }
+
+  .optB-action-btn:hover { color: var(--text-primary); background: var(--bg-card-hover); }
+  .optB-action-btn i { font-size: 14px; }
+
+  .optB-action-btn.primary {
+    background: var(--upstox-purple);
+    color: white;
+  }
+
+  /* =========================================
+     OPTION C: DASHBOARD + HEATMAP
+     ========================================= */
+  .optC-header {
+    padding: 16px 20px 12px;
+    background: var(--bg-primary);
+    position: sticky;
+    top: 0;
+    z-index: 10;
+  }
+
+  .optC-greeting {
+    font-size: 12px;
+    color: var(--text-tertiary);
+    margin-bottom: 2px;
+  }
+
+  .optC-title {
+    font-size: 20px;
+    font-weight: 700;
+  }
+
+  /* Quick stats */
+  .optC-quick-stats {
+    display: flex;
+    gap: 8px;
+    padding: 8px 16px 16px;
+    overflow-x: auto;
+    scrollbar-width: none;
+  }
+
+  .optC-quick-stats::-webkit-scrollbar { display: none; }
+
+  .optC-stat-card {
+    min-width: 110px;
+    padding: 12px;
+    border-radius: 12px;
+    background: var(--bg-card);
+    border: 1px solid var(--border-subtle);
+    text-align: center;
+  }
+
+  .optC-stat-icon {
+    width: 32px;
+    height: 32px;
+    border-radius: 10px;
+    margin: 0 auto 8px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 14px;
+  }
+
+  .optC-stat-val {
+    font-size: 20px;
+    font-weight: 800;
+    margin-bottom: 2px;
+  }
+
+  .optC-stat-label {
+    font-size: 10px;
+    color: var(--text-tertiary);
+    font-weight: 500;
+  }
+
+  /* Market pulse heatmap */
+  .optC-section {
+    padding: 0 16px 16px;
+  }
+
+  .optC-section-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 10px;
+  }
+
+  .optC-section-title {
+    font-size: 15px;
+    font-weight: 700;
+  }
+
+  .optC-section-link {
+    font-size: 12px;
+    color: var(--upstox-purple-light);
+    font-weight: 600;
+    cursor: pointer;
+  }
+
+  .optC-heatmap {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 4px;
+  }
+
+  .optC-heat-cell {
+    padding: 10px 6px;
+    border-radius: 8px;
+    text-align: center;
+    cursor: pointer;
+    transition: all 0.15s;
+  }
+
+  .optC-heat-cell:active { transform: scale(0.95); }
+
+  .optC-heat-name {
+    font-size: 10px;
+    font-weight: 600;
+    margin-bottom: 2px;
+    color: rgba(255,255,255,0.9);
+  }
+
+  .optC-heat-val {
+    font-size: 11px;
+    font-weight: 700;
+    color: white;
+  }
+
+  .heat-strong-bull { background: rgba(0, 200, 83, 0.4); }
+  .heat-bull { background: rgba(0, 200, 83, 0.2); }
+  .heat-neutral { background: rgba(255, 255, 255, 0.06); }
+  .heat-bear { background: rgba(255, 23, 68, 0.2); }
+  .heat-strong-bear { background: rgba(255, 23, 68, 0.4); }
+
+  /* Opportunity grid */
+  .optC-opp-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 8px;
+    padding-bottom: 100px;
+  }
+
+  .optC-opp-card {
+    background: var(--bg-card);
+    border-radius: 14px;
+    padding: 14px;
+    border: 1px solid var(--border-subtle);
+    cursor: pointer;
+    transition: all 0.15s;
+  }
+
+  .optC-opp-card:active { transform: scale(0.97); }
+
+  .optC-opp-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    margin-bottom: 8px;
+  }
+
+  .optC-opp-stock { font-size: 14px; font-weight: 700; }
+  .optC-opp-type { font-size: 10px; color: var(--text-tertiary); }
+
+  .optC-opp-conf {
+    font-size: 11px;
+    font-weight: 700;
+    padding: 2px 8px;
+    border-radius: 6px;
+  }
+
+  .optC-opp-signal {
+    font-size: 12px;
+    color: var(--text-secondary);
+    margin-bottom: 8px;
+    font-weight: 500;
+    line-height: 1.4;
+  }
+
+  .optC-opp-tags {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 4px;
+    margin-bottom: 8px;
+  }
+
+  .optC-opp-tag {
+    font-size: 9px;
+    font-weight: 600;
+    padding: 2px 6px;
+    border-radius: 4px;
+    background: var(--bg-elevated);
+    color: var(--text-secondary);
+  }
+
+  .optC-opp-price {
+    font-size: 14px;
+    font-weight: 700;
+  }
+
+  .optC-opp-change {
+    font-size: 11px;
+    font-weight: 600;
+  }
+
+  /* Type labels */
+  .optC-type-labels {
+    display: flex;
+    gap: 8px;
+    padding: 0 16px 12px;
+    overflow-x: auto;
+    scrollbar-width: none;
+  }
+
+  .optC-type-labels::-webkit-scrollbar { display: none; }
+
+  .optC-type-label {
+    padding: 6px 12px;
+    border-radius: 8px;
+    font-size: 12px;
+    font-weight: 600;
+    cursor: pointer;
+    white-space: nowrap;
+    border: 1px solid var(--border-color);
+    color: var(--text-secondary);
+    background: var(--bg-secondary);
+    transition: all 0.2s;
+  }
+
+  .optC-type-label.active {
+    background: var(--upstox-purple);
+    color: white;
+    border-color: var(--upstox-purple);
+  }
+
+  /* =========================================
+     OPTION D: DISCOVERY / COLLECTIONS
+     ========================================= */
+  .optD-header {
+    padding: 16px 20px 8px;
+    background: var(--bg-primary);
+    position: sticky;
+    top: 0;
+    z-index: 10;
+  }
+
+  .optD-title { font-size: 20px; font-weight: 700; margin-bottom: 12px; }
+
+  .optD-search-bar {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    background: var(--bg-card);
+    border: 1px solid var(--border-color);
+    border-radius: 12px;
+    padding: 10px 14px;
+    margin-bottom: 4px;
+  }
+
+  .optD-search-bar i { color: var(--text-tertiary); font-size: 14px; }
+
+  .optD-search-bar input {
+    flex: 1;
+    background: none;
+    border: none;
+    color: var(--text-primary);
+    font-family: 'Inter', sans-serif;
+    font-size: 14px;
+    outline: none;
+  }
+
+  .optD-search-bar input::placeholder { color: var(--text-tertiary); }
+
+  /* Curated collections */
+  .optD-collections {
+    padding: 16px;
+  }
+
+  .optD-coll-label {
+    font-size: 13px;
+    font-weight: 700;
+    color: var(--text-tertiary);
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    margin-bottom: 12px;
+  }
+
+  .optD-coll-scroll {
+    display: flex;
+    gap: 10px;
+    overflow-x: auto;
+    scrollbar-width: none;
+    padding-bottom: 4px;
+  }
+
+  .optD-coll-scroll::-webkit-scrollbar { display: none; }
+
+  .optD-coll-card {
+    min-width: 200px;
+    border-radius: 16px;
+    padding: 18px 16px;
+    position: relative;
+    overflow: hidden;
+    cursor: pointer;
+    transition: all 0.15s;
+  }
+
+  .optD-coll-card:active { transform: scale(0.97); }
+
+  .optD-coll-icon {
+    font-size: 28px;
+    margin-bottom: 12px;
+    display: block;
+  }
+
+  .optD-coll-name {
+    font-size: 15px;
+    font-weight: 700;
+    margin-bottom: 4px;
+    color: white;
+  }
+
+  .optD-coll-desc {
+    font-size: 11px;
+    color: rgba(255,255,255,0.7);
+    margin-bottom: 10px;
+    line-height: 1.4;
+  }
+
+  .optD-coll-count {
+    font-size: 11px;
+    font-weight: 700;
+    color: rgba(255,255,255,0.9);
+    display: flex;
+    align-items: center;
+    gap: 4px;
+  }
+
+  /* Trending section */
+  .optD-trending {
+    padding: 0 16px 16px;
+  }
+
+  .optD-trend-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 10px;
+  }
+
+  .optD-trend-title {
+    font-size: 15px;
+    font-weight: 700;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+  }
+
+  .optD-trend-item {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 12px 14px;
+    background: var(--bg-card);
+    border-radius: 12px;
+    margin-bottom: 8px;
+    border: 1px solid var(--border-subtle);
+    cursor: pointer;
+    transition: all 0.15s;
+  }
+
+  .optD-trend-item:active { transform: scale(0.98); }
+
+  .optD-trend-rank {
+    font-size: 16px;
+    font-weight: 800;
+    color: var(--text-tertiary);
+    min-width: 24px;
+    text-align: center;
+  }
+
+  .optD-trend-info { flex: 1; }
+  .optD-trend-stock { font-size: 14px; font-weight: 700; }
+  .optD-trend-signal { font-size: 11px; color: var(--text-secondary); margin-top: 2px; }
+
+  .optD-trend-right { text-align: right; }
+  .optD-trend-conf { font-size: 13px; font-weight: 800; }
+  .optD-trend-type {
+    font-size: 10px;
+    color: var(--text-tertiary);
+    margin-top: 2px;
+  }
+
+  /* Personalized section */
+  .optD-personalized {
+    padding: 0 16px 100px;
+  }
+
+  .optD-pref-chips {
+    display: flex;
+    gap: 8px;
+    flex-wrap: wrap;
+    margin-bottom: 14px;
+  }
+
+  .optD-pref-chip {
+    padding: 7px 14px;
+    border-radius: 20px;
+    font-size: 12px;
+    font-weight: 500;
+    cursor: pointer;
+    border: 1px solid var(--border-color);
+    color: var(--text-secondary);
+    background: var(--bg-secondary);
+    transition: all 0.2s;
+  }
+
+  .optD-pref-chip.active {
+    background: rgba(108, 63, 228, 0.15);
+    border-color: var(--upstox-purple);
+    color: var(--upstox-purple-light);
+  }
+
+  .optD-mini-cards {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 8px;
+  }
+
+  .optD-mini-card {
+    background: var(--bg-card);
+    border-radius: 12px;
+    padding: 12px;
+    border: 1px solid var(--border-subtle);
+    cursor: pointer;
+    transition: all 0.15s;
+  }
+
+  .optD-mini-card:active { transform: scale(0.97); }
+
+  .optD-mini-top {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 6px;
+  }
+
+  .optD-mini-stock { font-size: 13px; font-weight: 700; }
+
+  .optD-mini-conf {
+    font-size: 10px;
+    font-weight: 700;
+    padding: 2px 6px;
+    border-radius: 4px;
+  }
+
+  .optD-mini-signal {
+    font-size: 11px;
+    color: var(--text-secondary);
+    margin-bottom: 6px;
+    line-height: 1.4;
+  }
+
+  .optD-mini-bottom {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+
+  .optD-mini-price { font-size: 13px; font-weight: 600; }
+  .optD-mini-change { font-size: 11px; font-weight: 600; }
+
+  /* =========================================
+     BOTTOM NAV (shared)
+     ========================================= */
+  .bottom-nav {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    background: var(--bg-secondary);
+    border-top: 1px solid var(--border-color);
+    display: flex;
+    padding: 8px 0 24px;
+    z-index: 50;
+  }
+
+  .nav-item {
+    flex: 1;
+    text-align: center;
+    cursor: pointer;
+  }
+
+  .nav-item i {
+    font-size: 18px;
+    color: var(--text-tertiary);
+    margin-bottom: 4px;
+    display: block;
+  }
+
+  .nav-item span {
+    font-size: 10px;
+    color: var(--text-tertiary);
+    font-weight: 500;
+  }
+
+  .nav-item.active i { color: var(--upstox-purple-light); }
+  .nav-item.active span { color: var(--upstox-purple-light); }
+
+  /* Description panel */
+  .design-description {
+    max-width: 800px;
+    width: 100%;
+    margin-top: 24px;
+    padding: 24px;
+    background: var(--bg-card);
+    border: 1px solid var(--border-color);
+    border-radius: 16px;
+  }
+
+  .desc-title {
+    font-size: 18px;
+    font-weight: 700;
+    margin-bottom: 12px;
+    color: var(--upstox-purple-light);
+  }
+
+  .desc-subtitle {
+    font-size: 14px;
+    font-weight: 600;
+    margin-top: 14px;
+    margin-bottom: 6px;
+    color: var(--text-primary);
+  }
+
+  .desc-text {
+    font-size: 13px;
+    color: var(--text-secondary);
+    line-height: 1.7;
+  }
+
+  .desc-pros {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    margin-top: 8px;
+  }
+
+  .desc-pro {
+    padding: 5px 12px;
+    background: var(--upstox-green-bg);
+    color: var(--upstox-green);
+    font-size: 12px;
+    font-weight: 600;
+    border-radius: 8px;
+  }
+
+  .desc-con {
+    padding: 5px 12px;
+    background: var(--upstox-orange-bg);
+    color: var(--upstox-orange);
+    font-size: 12px;
+    font-weight: 600;
+    border-radius: 8px;
+  }
+</style>
+</head>
+<body>
+
+<!-- Option Selector -->
+<div class="option-selector">
+  <label>Design:</label>
+  <button class="option-btn active" onclick="switchDesign('A')">A — Tab Scanner</button>
+  <button class="option-btn" onclick="switchDesign('B')">B — Signal Feed</button>
+  <button class="option-btn" onclick="switchDesign('C')">C — Dashboard</button>
+  <button class="option-btn" onclick="switchDesign('D')">D — Discovery</button>
+</div>
+
+<!-- Phone Frame -->
+<div class="phone-frame">
+  <div class="phone-notch"></div>
+  <div class="phone-content">
+
+    <!-- ========== OPTION A ========== -->
+    <div class="design-option active" id="designA">
+      <div class="optA-header">
+        <div class="optA-title-row">
+          <div class="optA-title"><span><i class="fas fa-crosshairs"></i></span> Trade Scanner</div>
+          <div class="optA-icons">
+            <i class="fas fa-sliders-h"></i>
+            <i class="fas fa-bell"></i>
+          </div>
+        </div>
+        <div class="optA-tabs">
+          <div class="optA-tab active" onclick="switchTab(this)">Intraday <span class="tab-count">12</span></div>
+          <div class="optA-tab" onclick="switchTab(this)">BTST <span class="tab-count">8</span></div>
+          <div class="optA-tab" onclick="switchTab(this)">Swing <span class="tab-count">15</span></div>
+        </div>
+      </div>
+
+      <div class="optA-filters">
+        <div class="optA-chip active"><i class="fas fa-fire"></i> All Signals</div>
+        <div class="optA-chip" onclick="this.classList.toggle('active')"><i class="fas fa-bolt"></i> Momentum</div>
+        <div class="optA-chip" onclick="this.classList.toggle('active')"><i class="fas fa-chart-line"></i> Breakout</div>
+        <div class="optA-chip" onclick="this.classList.toggle('active')"><i class="fas fa-shapes"></i> Patterns</div>
+        <div class="optA-chip" onclick="this.classList.toggle('active')"><i class="fas fa-candycane"></i> Candlestick</div>
+        <div class="optA-chip" onclick="this.classList.toggle('active')"><i class="fas fa-chart-bar"></i> Volume</div>
+        <div class="optA-chip" onclick="this.classList.toggle('active')"><i class="fas fa-wave-square"></i> RSI/MACD</div>
+      </div>
+
+      <div class="optA-summary">
+        <div class="optA-summary-text"><strong>12 setups</strong> found for Intraday</div>
+        <div class="optA-sort"><i class="fas fa-sort-amount-down"></i> Confidence</div>
+      </div>
+
+      <div class="optA-cards">
+        <!-- Card 1 -->
+        <div class="optA-card">
+          <div class="optA-card-top">
+            <div class="optA-stock-info">
+              <div class="optA-stock-logo">TCS</div>
+              <div>
+                <div class="optA-stock-name">TCS</div>
+                <div class="optA-stock-price">₹4,128.50</div>
+              </div>
+            </div>
+            <div class="optA-stock-change green">+1.8%</div>
+          </div>
+          <div class="optA-confidence confidence-high">
+            <div class="optA-confidence-bar"><div class="optA-confidence-fill" style="width:88%"></div></div>
+            <div class="optA-confidence-label">88% High</div>
+          </div>
+          <div class="optA-signal-tags">
+            <span class="optA-signal-tag tag-breakout">Resistance Breakout</span>
+            <span class="optA-signal-tag tag-volume">Volume Surge</span>
+            <span class="optA-signal-tag tag-momentum">RSI Bullish</span>
+          </div>
+          <div class="optA-levels">
+            <div class="optA-level"><div class="optA-level-label">Entry</div><div class="optA-level-val">₹4,130</div></div>
+            <div class="optA-level"><div class="optA-level-label">Target</div><div class="optA-level-val green">₹4,210</div></div>
+            <div class="optA-level"><div class="optA-level-label">Stop Loss</div><div class="optA-level-val red">₹4,085</div></div>
+            <div class="optA-level"><div class="optA-level-label">R:R</div><div class="optA-level-val green">1:1.8</div></div>
+          </div>
+        </div>
+
+        <!-- Card 2 -->
+        <div class="optA-card">
+          <div class="optA-card-top">
+            <div class="optA-stock-info">
+              <div class="optA-stock-logo" style="color:#FFB84D;">RIL</div>
+              <div>
+                <div class="optA-stock-name">Reliance Ind.</div>
+                <div class="optA-stock-price">₹2,876.30</div>
+              </div>
+            </div>
+            <div class="optA-stock-change green">+0.9%</div>
+          </div>
+          <div class="optA-confidence confidence-high">
+            <div class="optA-confidence-bar"><div class="optA-confidence-fill" style="width:82%"></div></div>
+            <div class="optA-confidence-label">82% High</div>
+          </div>
+          <div class="optA-signal-tags">
+            <span class="optA-signal-tag tag-candle">Bullish Engulfing</span>
+            <span class="optA-signal-tag tag-pattern">Ascending Triangle</span>
+          </div>
+          <div class="optA-levels">
+            <div class="optA-level"><div class="optA-level-label">Entry</div><div class="optA-level-val">₹2,880</div></div>
+            <div class="optA-level"><div class="optA-level-label">Target</div><div class="optA-level-val green">₹2,945</div></div>
+            <div class="optA-level"><div class="optA-level-label">Stop Loss</div><div class="optA-level-val red">₹2,840</div></div>
+            <div class="optA-level"><div class="optA-level-label">R:R</div><div class="optA-level-val green">1:1.6</div></div>
+          </div>
+        </div>
+
+        <!-- Card 3 -->
+        <div class="optA-card">
+          <div class="optA-card-top">
+            <div class="optA-stock-info">
+              <div class="optA-stock-logo" style="color:#22D3EE;">INFY</div>
+              <div>
+                <div class="optA-stock-name">Infosys</div>
+                <div class="optA-stock-price">₹1,892.15</div>
+              </div>
+            </div>
+            <div class="optA-stock-change red">-0.4%</div>
+          </div>
+          <div class="optA-confidence confidence-med">
+            <div class="optA-confidence-bar"><div class="optA-confidence-fill" style="width:72%"></div></div>
+            <div class="optA-confidence-label">72% Med</div>
+          </div>
+          <div class="optA-signal-tags">
+            <span class="optA-signal-tag tag-rsi">RSI Oversold</span>
+            <span class="optA-signal-tag tag-candle">Hammer</span>
+            <span class="optA-signal-tag tag-volume">Volume Dry-Up</span>
+          </div>
+          <div class="optA-levels">
+            <div class="optA-level"><div class="optA-level-label">Entry</div><div class="optA-level-val">₹1,890</div></div>
+            <div class="optA-level"><div class="optA-level-label">Target</div><div class="optA-level-val green">₹1,935</div></div>
+            <div class="optA-level"><div class="optA-level-label">Stop Loss</div><div class="optA-level-val red">₹1,865</div></div>
+            <div class="optA-level"><div class="optA-level-label">R:R</div><div class="optA-level-val green">1:1.8</div></div>
+          </div>
+        </div>
+
+        <!-- Card 4 -->
+        <div class="optA-card">
+          <div class="optA-card-top">
+            <div class="optA-stock-info">
+              <div class="optA-stock-logo" style="color:#F472B6;">HDFC</div>
+              <div>
+                <div class="optA-stock-name">HDFC Bank</div>
+                <div class="optA-stock-price">₹1,712.80</div>
+              </div>
+            </div>
+            <div class="optA-stock-change green">+2.1%</div>
+          </div>
+          <div class="optA-confidence confidence-high">
+            <div class="optA-confidence-bar"><div class="optA-confidence-fill" style="width:91%"></div></div>
+            <div class="optA-confidence-label">91% High</div>
+          </div>
+          <div class="optA-signal-tags">
+            <span class="optA-signal-tag tag-breakout">52W High Breakout</span>
+            <span class="optA-signal-tag tag-momentum">MACD Cross</span>
+            <span class="optA-signal-tag tag-volume">OBV Rising</span>
+          </div>
+          <div class="optA-levels">
+            <div class="optA-level"><div class="optA-level-label">Entry</div><div class="optA-level-val">₹1,715</div></div>
+            <div class="optA-level"><div class="optA-level-label">Target</div><div class="optA-level-val green">₹1,780</div></div>
+            <div class="optA-level"><div class="optA-level-label">Stop Loss</div><div class="optA-level-val red">₹1,685</div></div>
+            <div class="optA-level"><div class="optA-level-label">R:R</div><div class="optA-level-val green">1:2.2</div></div>
+          </div>
+        </div>
+
+        <!-- Card 5 -->
+        <div class="optA-card">
+          <div class="optA-card-top">
+            <div class="optA-stock-info">
+              <div class="optA-stock-logo" style="color:#4ADE80;">ITC</div>
+              <div>
+                <div class="optA-stock-name">ITC Limited</div>
+                <div class="optA-stock-price">₹468.20</div>
+              </div>
+            </div>
+            <div class="optA-stock-change green">+1.2%</div>
+          </div>
+          <div class="optA-confidence confidence-med">
+            <div class="optA-confidence-bar"><div class="optA-confidence-fill" style="width:74%"></div></div>
+            <div class="optA-confidence-label">74% Med</div>
+          </div>
+          <div class="optA-signal-tags">
+            <span class="optA-signal-tag tag-pattern">Cup & Handle</span>
+            <span class="optA-signal-tag tag-candle">Morning Star</span>
+          </div>
+          <div class="optA-levels">
+            <div class="optA-level"><div class="optA-level-label">Entry</div><div class="optA-level-val">₹468</div></div>
+            <div class="optA-level"><div class="optA-level-label">Target</div><div class="optA-level-val green">₹485</div></div>
+            <div class="optA-level"><div class="optA-level-label">Stop Loss</div><div class="optA-level-val red">₹458</div></div>
+            <div class="optA-level"><div class="optA-level-label">R:R</div><div class="optA-level-val green">1:1.7</div></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Bottom Nav -->
+      <div class="bottom-nav">
+        <div class="nav-item"><i class="fas fa-chart-pie"></i><span>Portfolio</span></div>
+        <div class="nav-item"><i class="fas fa-search"></i><span>Explore</span></div>
+        <div class="nav-item active"><i class="fas fa-crosshairs"></i><span>Scanner</span></div>
+        <div class="nav-item"><i class="fas fa-newspaper"></i><span>Orders</span></div>
+        <div class="nav-item"><i class="fas fa-user"></i><span>Profile</span></div>
+      </div>
+    </div>
+
+    <!-- ========== OPTION B ========== -->
+    <div class="design-option" id="designB">
+      <div class="optB-header">
+        <div class="optB-title">Opportunities</div>
+        <div style="display:flex;align-items:center;gap:12px;">
+          <div><span class="optB-live-dot"></span><span class="optB-live-text">Live</span></div>
+          <i class="fas fa-filter" style="color:var(--text-secondary);font-size:16px;"></i>
+        </div>
+      </div>
+
+      <div class="optB-strategies">
+        <div class="optB-strategy-pill active">
+          <i class="fas fa-bolt" style="color:var(--upstox-orange);"></i>
+          <span>Intraday</span>
+        </div>
+        <div class="optB-strategy-pill" onclick="this.classList.toggle('active')">
+          <i class="fas fa-moon" style="color:var(--upstox-blue);"></i>
+          <span>BTST</span>
+        </div>
+        <div class="optB-strategy-pill" onclick="this.classList.toggle('active')">
+          <i class="fas fa-wave-square" style="color:var(--upstox-purple-light);"></i>
+          <span>Swing</span>
+        </div>
+        <div class="optB-strategy-pill" onclick="this.classList.toggle('active')">
+          <i class="fas fa-fire" style="color:var(--upstox-red);"></i>
+          <span>Trending</span>
+        </div>
+      </div>
+
+      <div class="optB-feed">
+        <!-- Signal 1 -->
+        <div class="optB-signal-card">
+          <div class="optB-signal-top">
+            <span class="optB-signal-badge badge-bullish"><i class="fas fa-arrow-up"></i> Bullish</span>
+            <span class="optB-signal-time"><i class="fas fa-clock"></i> 2 min ago</span>
+          </div>
+          <div class="optB-signal-body">
+            <div class="optB-signal-stock-row">
+              <div class="optB-signal-stock-left">
+                <div class="optB-signal-logo" style="color:var(--upstox-green);">HDFC</div>
+                <div>
+                  <div class="optB-signal-stock-name">HDFC Bank</div>
+                  <div class="optB-signal-stock-sector">Banking • Large Cap</div>
+                </div>
+              </div>
+              <div class="optB-signal-price-area">
+                <div class="optB-signal-price">₹1,712.80</div>
+                <div class="optB-signal-change" style="color:var(--upstox-green);">+2.1%</div>
+              </div>
+            </div>
+
+            <div class="optB-confidence-meter">
+              <div class="optB-meter-ring">
+                <svg viewBox="0 0 48 48">
+                  <circle class="optB-meter-bg"/>
+                  <circle class="optB-meter-fill" stroke="var(--upstox-green)" stroke-dasharray="125.6" stroke-dashoffset="11.3"/>
+                </svg>
+                <div class="optB-meter-value" style="color:var(--upstox-green);">91%</div>
+              </div>
+              <div class="optB-meter-detail">
+                <div class="optB-meter-label">Confidence from 3 converging signals</div>
+                <div class="optB-meter-factors">
+                  <span class="optB-factor-dot" style="background:var(--upstox-green);"></span>
+                  <span class="optB-factor-name">52W Breakout</span>
+                  <span style="color:var(--text-tertiary);font-size:11px;">•</span>
+                  <span class="optB-factor-dot" style="background:var(--upstox-blue);"></span>
+                  <span class="optB-factor-name">MACD Cross</span>
+                  <span style="color:var(--text-tertiary);font-size:11px;">•</span>
+                  <span class="optB-factor-dot" style="background:var(--upstox-orange);"></span>
+                  <span class="optB-factor-name">OBV Rise</span>
+                </div>
+              </div>
+            </div>
+
+            <div class="optB-trade-levels">
+              <div class="optB-trade-level">
+                <div class="optB-trade-level-label">Entry</div>
+                <div class="optB-trade-level-val">₹1,715</div>
+              </div>
+              <div class="optB-trade-level">
+                <div class="optB-trade-level-label">Target</div>
+                <div class="optB-trade-level-val" style="color:var(--upstox-green);">₹1,780</div>
+              </div>
+              <div class="optB-trade-level">
+                <div class="optB-trade-level-label">SL</div>
+                <div class="optB-trade-level-val" style="color:var(--upstox-red);">₹1,685</div>
+              </div>
+              <div class="optB-trade-level">
+                <div class="optB-trade-level-label">R:R</div>
+                <div class="optB-trade-level-val" style="color:var(--upstox-green);">2.2x</div>
+              </div>
+            </div>
+          </div>
+          <div class="optB-signal-actions">
+            <div class="optB-action-btn"><i class="far fa-bookmark"></i> Save</div>
+            <div class="optB-action-btn"><i class="fas fa-chart-line"></i> Chart</div>
+            <div class="optB-action-btn primary"><i class="fas fa-plus"></i> Trade</div>
+          </div>
+        </div>
+
+        <!-- Signal 2 -->
+        <div class="optB-signal-card">
+          <div class="optB-signal-top">
+            <span class="optB-signal-badge badge-bullish"><i class="fas fa-arrow-up"></i> Bullish</span>
+            <span class="optB-signal-time"><i class="fas fa-clock"></i> 8 min ago</span>
+          </div>
+          <div class="optB-signal-body">
+            <div class="optB-signal-stock-row">
+              <div class="optB-signal-stock-left">
+                <div class="optB-signal-logo" style="color:var(--upstox-purple-light);">TCS</div>
+                <div>
+                  <div class="optB-signal-stock-name">TCS</div>
+                  <div class="optB-signal-stock-sector">IT • Large Cap</div>
+                </div>
+              </div>
+              <div class="optB-signal-price-area">
+                <div class="optB-signal-price">₹4,128.50</div>
+                <div class="optB-signal-change" style="color:var(--upstox-green);">+1.8%</div>
+              </div>
+            </div>
+
+            <div class="optB-confidence-meter">
+              <div class="optB-meter-ring">
+                <svg viewBox="0 0 48 48">
+                  <circle class="optB-meter-bg"/>
+                  <circle class="optB-meter-fill" stroke="var(--upstox-green)" stroke-dasharray="125.6" stroke-dashoffset="15.1"/>
+                </svg>
+                <div class="optB-meter-value" style="color:var(--upstox-green);">88%</div>
+              </div>
+              <div class="optB-meter-detail">
+                <div class="optB-meter-label">Confidence from 3 converging signals</div>
+                <div class="optB-meter-factors">
+                  <span class="optB-factor-dot" style="background:var(--upstox-green);"></span>
+                  <span class="optB-factor-name">Resistance Break</span>
+                  <span style="color:var(--text-tertiary);font-size:11px;">•</span>
+                  <span class="optB-factor-dot" style="background:var(--upstox-orange);"></span>
+                  <span class="optB-factor-name">Vol Surge</span>
+                  <span style="color:var(--text-tertiary);font-size:11px;">•</span>
+                  <span class="optB-factor-dot" style="background:var(--upstox-blue);"></span>
+                  <span class="optB-factor-name">RSI Bullish</span>
+                </div>
+              </div>
+            </div>
+
+            <div class="optB-trade-levels">
+              <div class="optB-trade-level">
+                <div class="optB-trade-level-label">Entry</div>
+                <div class="optB-trade-level-val">₹4,130</div>
+              </div>
+              <div class="optB-trade-level">
+                <div class="optB-trade-level-label">Target</div>
+                <div class="optB-trade-level-val" style="color:var(--upstox-green);">₹4,210</div>
+              </div>
+              <div class="optB-trade-level">
+                <div class="optB-trade-level-label">SL</div>
+                <div class="optB-trade-level-val" style="color:var(--upstox-red);">₹4,085</div>
+              </div>
+              <div class="optB-trade-level">
+                <div class="optB-trade-level-label">R:R</div>
+                <div class="optB-trade-level-val" style="color:var(--upstox-green);">1.8x</div>
+              </div>
+            </div>
+          </div>
+          <div class="optB-signal-actions">
+            <div class="optB-action-btn"><i class="far fa-bookmark"></i> Save</div>
+            <div class="optB-action-btn"><i class="fas fa-chart-line"></i> Chart</div>
+            <div class="optB-action-btn primary"><i class="fas fa-plus"></i> Trade</div>
+          </div>
+        </div>
+
+        <!-- Signal 3 - Bearish -->
+        <div class="optB-signal-card">
+          <div class="optB-signal-top">
+            <span class="optB-signal-badge badge-bearish"><i class="fas fa-arrow-down"></i> Bearish</span>
+            <span class="optB-signal-time"><i class="fas fa-clock"></i> 15 min ago</span>
+          </div>
+          <div class="optB-signal-body">
+            <div class="optB-signal-stock-row">
+              <div class="optB-signal-stock-left">
+                <div class="optB-signal-logo" style="color:var(--upstox-red);">WIPRO</div>
+                <div>
+                  <div class="optB-signal-stock-name">Wipro</div>
+                  <div class="optB-signal-stock-sector">IT • Large Cap</div>
+                </div>
+              </div>
+              <div class="optB-signal-price-area">
+                <div class="optB-signal-price">₹542.60</div>
+                <div class="optB-signal-change" style="color:var(--upstox-red);">-1.5%</div>
+              </div>
+            </div>
+
+            <div class="optB-confidence-meter">
+              <div class="optB-meter-ring">
+                <svg viewBox="0 0 48 48">
+                  <circle class="optB-meter-bg"/>
+                  <circle class="optB-meter-fill" stroke="var(--upstox-red)" stroke-dasharray="125.6" stroke-dashoffset="24.5"/>
+                </svg>
+                <div class="optB-meter-value" style="color:var(--upstox-red);">80%</div>
+              </div>
+              <div class="optB-meter-detail">
+                <div class="optB-meter-label">Bearish signal from 2 factors</div>
+                <div class="optB-meter-factors">
+                  <span class="optB-factor-dot" style="background:var(--upstox-red);"></span>
+                  <span class="optB-factor-name">Support Break</span>
+                  <span style="color:var(--text-tertiary);font-size:11px;">•</span>
+                  <span class="optB-factor-dot" style="background:var(--upstox-orange);"></span>
+                  <span class="optB-factor-name">Bearish Engulfing</span>
+                </div>
+              </div>
+            </div>
+
+            <div class="optB-trade-levels">
+              <div class="optB-trade-level">
+                <div class="optB-trade-level-label">Entry</div>
+                <div class="optB-trade-level-val">₹542</div>
+              </div>
+              <div class="optB-trade-level">
+                <div class="optB-trade-level-label">Target</div>
+                <div class="optB-trade-level-val" style="color:var(--upstox-green);">₹518</div>
+              </div>
+              <div class="optB-trade-level">
+                <div class="optB-trade-level-label">SL</div>
+                <div class="optB-trade-level-val" style="color:var(--upstox-red);">₹555</div>
+              </div>
+              <div class="optB-trade-level">
+                <div class="optB-trade-level-label">R:R</div>
+                <div class="optB-trade-level-val" style="color:var(--upstox-green);">1.8x</div>
+              </div>
+            </div>
+          </div>
+          <div class="optB-signal-actions">
+            <div class="optB-action-btn"><i class="far fa-bookmark"></i> Save</div>
+            <div class="optB-action-btn"><i class="fas fa-chart-line"></i> Chart</div>
+            <div class="optB-action-btn primary"><i class="fas fa-plus"></i> Trade</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="bottom-nav">
+        <div class="nav-item"><i class="fas fa-chart-pie"></i><span>Portfolio</span></div>
+        <div class="nav-item"><i class="fas fa-search"></i><span>Explore</span></div>
+        <div class="nav-item active"><i class="fas fa-crosshairs"></i><span>Signals</span></div>
+        <div class="nav-item"><i class="fas fa-newspaper"></i><span>Orders</span></div>
+        <div class="nav-item"><i class="fas fa-user"></i><span>Profile</span></div>
+      </div>
+    </div>
+
+    <!-- ========== OPTION C ========== -->
+    <div class="design-option" id="designC">
+      <div class="optC-header">
+        <div class="optC-greeting">Good Morning, Joyesh</div>
+        <div class="optC-title">Market Scanner</div>
+      </div>
+
+      <div class="optC-quick-stats">
+        <div class="optC-stat-card">
+          <div class="optC-stat-icon" style="background:var(--upstox-green-bg);color:var(--upstox-green);"><i class="fas fa-arrow-trend-up"></i></div>
+          <div class="optC-stat-val" style="color:var(--upstox-green);">35</div>
+          <div class="optC-stat-label">Bullish Setups</div>
+        </div>
+        <div class="optC-stat-card">
+          <div class="optC-stat-icon" style="background:var(--upstox-red-bg);color:var(--upstox-red);"><i class="fas fa-arrow-trend-down"></i></div>
+          <div class="optC-stat-val" style="color:var(--upstox-red);">12</div>
+          <div class="optC-stat-label">Bearish Setups</div>
+        </div>
+        <div class="optC-stat-card">
+          <div class="optC-stat-icon" style="background:var(--upstox-purple);background:rgba(108,63,228,0.15);color:var(--upstox-purple-light);"><i class="fas fa-fire"></i></div>
+          <div class="optC-stat-val" style="color:var(--upstox-purple-light);">8</div>
+          <div class="optC-stat-label">90%+ Confidence</div>
+        </div>
+      </div>
+
+      <div class="optC-section">
+        <div class="optC-section-header">
+          <div class="optC-section-title">Sector Pulse</div>
+          <div class="optC-section-link">View All</div>
+        </div>
+        <div class="optC-heatmap">
+          <div class="optC-heat-cell heat-strong-bull"><div class="optC-heat-name">Banking</div><div class="optC-heat-val">+2.4%</div></div>
+          <div class="optC-heat-cell heat-bull"><div class="optC-heat-name">IT</div><div class="optC-heat-val">+1.1%</div></div>
+          <div class="optC-heat-cell heat-strong-bull"><div class="optC-heat-name">Auto</div><div class="optC-heat-val">+2.8%</div></div>
+          <div class="optC-heat-cell heat-bear"><div class="optC-heat-name">Pharma</div><div class="optC-heat-val">-0.8%</div></div>
+          <div class="optC-heat-cell heat-bull"><div class="optC-heat-name">FMCG</div><div class="optC-heat-val">+0.9%</div></div>
+          <div class="optC-heat-cell heat-neutral"><div class="optC-heat-name">Metal</div><div class="optC-heat-val">+0.1%</div></div>
+          <div class="optC-heat-cell heat-strong-bear"><div class="optC-heat-name">Realty</div><div class="optC-heat-val">-2.1%</div></div>
+          <div class="optC-heat-cell heat-bull"><div class="optC-heat-name">Energy</div><div class="optC-heat-val">+1.5%</div></div>
+        </div>
+      </div>
+
+      <div class="optC-section">
+        <div class="optC-section-header">
+          <div class="optC-section-title">Top Opportunities</div>
+          <div class="optC-section-link">See All</div>
+        </div>
+      </div>
+
+      <div class="optC-type-labels">
+        <div class="optC-type-label active">All</div>
+        <div class="optC-type-label" onclick="this.classList.toggle('active')">Intraday</div>
+        <div class="optC-type-label" onclick="this.classList.toggle('active')">BTST</div>
+        <div class="optC-type-label" onclick="this.classList.toggle('active')">Swing</div>
+        <div class="optC-type-label" onclick="this.classList.toggle('active')">Breakouts</div>
+        <div class="optC-type-label" onclick="this.classList.toggle('active')">Reversals</div>
+      </div>
+
+      <div class="optC-section">
+        <div class="optC-opp-grid">
+          <div class="optC-opp-card">
+            <div class="optC-opp-header">
+              <div>
+                <div class="optC-opp-stock">HDFC Bank</div>
+                <div class="optC-opp-type">Intraday</div>
+              </div>
+              <div class="optC-opp-conf" style="background:var(--upstox-green-bg);color:var(--upstox-green);">91%</div>
+            </div>
+            <div class="optC-opp-signal">52W High Breakout + MACD Cross + Volume</div>
+            <div class="optC-opp-tags">
+              <span class="optC-opp-tag">Breakout</span>
+              <span class="optC-opp-tag">Momentum</span>
+            </div>
+            <div class="optC-opp-price">₹1,712.80</div>
+            <div class="optC-opp-change" style="color:var(--upstox-green);">+2.1%</div>
+          </div>
+
+          <div class="optC-opp-card">
+            <div class="optC-opp-header">
+              <div>
+                <div class="optC-opp-stock">TCS</div>
+                <div class="optC-opp-type">Intraday</div>
+              </div>
+              <div class="optC-opp-conf" style="background:var(--upstox-green-bg);color:var(--upstox-green);">88%</div>
+            </div>
+            <div class="optC-opp-signal">Resistance Break + Volume Surge</div>
+            <div class="optC-opp-tags">
+              <span class="optC-opp-tag">Breakout</span>
+              <span class="optC-opp-tag">Volume</span>
+            </div>
+            <div class="optC-opp-price">₹4,128.50</div>
+            <div class="optC-opp-change" style="color:var(--upstox-green);">+1.8%</div>
+          </div>
+
+          <div class="optC-opp-card">
+            <div class="optC-opp-header">
+              <div>
+                <div class="optC-opp-stock">Reliance</div>
+                <div class="optC-opp-type">BTST</div>
+              </div>
+              <div class="optC-opp-conf" style="background:var(--upstox-green-bg);color:var(--upstox-green);">82%</div>
+            </div>
+            <div class="optC-opp-signal">Bullish Engulfing + Ascending Triangle</div>
+            <div class="optC-opp-tags">
+              <span class="optC-opp-tag">Pattern</span>
+              <span class="optC-opp-tag">Candle</span>
+            </div>
+            <div class="optC-opp-price">₹2,876.30</div>
+            <div class="optC-opp-change" style="color:var(--upstox-green);">+0.9%</div>
+          </div>
+
+          <div class="optC-opp-card">
+            <div class="optC-opp-header">
+              <div>
+                <div class="optC-opp-stock">Infosys</div>
+                <div class="optC-opp-type">Swing</div>
+              </div>
+              <div class="optC-opp-conf" style="background:var(--upstox-orange-bg);color:var(--upstox-orange);">72%</div>
+            </div>
+            <div class="optC-opp-signal">RSI Oversold + Hammer at Support</div>
+            <div class="optC-opp-tags">
+              <span class="optC-opp-tag">RSI</span>
+              <span class="optC-opp-tag">Reversal</span>
+            </div>
+            <div class="optC-opp-price">₹1,892.15</div>
+            <div class="optC-opp-change" style="color:var(--upstox-red);">-0.4%</div>
+          </div>
+
+          <div class="optC-opp-card">
+            <div class="optC-opp-header">
+              <div>
+                <div class="optC-opp-stock">Bajaj Fin.</div>
+                <div class="optC-opp-type">Swing</div>
+              </div>
+              <div class="optC-opp-conf" style="background:var(--upstox-green-bg);color:var(--upstox-green);">85%</div>
+            </div>
+            <div class="optC-opp-signal">Double Bottom + MACD Divergence</div>
+            <div class="optC-opp-tags">
+              <span class="optC-opp-tag">Pattern</span>
+              <span class="optC-opp-tag">MACD</span>
+            </div>
+            <div class="optC-opp-price">₹7,420.00</div>
+            <div class="optC-opp-change" style="color:var(--upstox-green);">+1.5%</div>
+          </div>
+
+          <div class="optC-opp-card">
+            <div class="optC-opp-header">
+              <div>
+                <div class="optC-opp-stock">ITC</div>
+                <div class="optC-opp-type">BTST</div>
+              </div>
+              <div class="optC-opp-conf" style="background:var(--upstox-orange-bg);color:var(--upstox-orange);">74%</div>
+            </div>
+            <div class="optC-opp-signal">Cup & Handle + Morning Star</div>
+            <div class="optC-opp-tags">
+              <span class="optC-opp-tag">Pattern</span>
+              <span class="optC-opp-tag">Candle</span>
+            </div>
+            <div class="optC-opp-price">₹468.20</div>
+            <div class="optC-opp-change" style="color:var(--upstox-green);">+1.2%</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="bottom-nav">
+        <div class="nav-item"><i class="fas fa-chart-pie"></i><span>Portfolio</span></div>
+        <div class="nav-item"><i class="fas fa-search"></i><span>Explore</span></div>
+        <div class="nav-item active"><i class="fas fa-crosshairs"></i><span>Scanner</span></div>
+        <div class="nav-item"><i class="fas fa-newspaper"></i><span>Orders</span></div>
+        <div class="nav-item"><i class="fas fa-user"></i><span>Profile</span></div>
+      </div>
+    </div>
+
+    <!-- ========== OPTION D ========== -->
+    <div class="design-option" id="designD">
+      <div class="optD-header">
+        <div class="optD-title">Discover Trades</div>
+        <div class="optD-search-bar">
+          <i class="fas fa-search"></i>
+          <input type="text" placeholder="Search stocks, patterns, strategies...">
+        </div>
+      </div>
+
+      <div class="optD-collections">
+        <div class="optD-coll-label">Curated Themes</div>
+        <div class="optD-coll-scroll">
+          <div class="optD-coll-card" style="background:linear-gradient(135deg, #1a5c2e, #0d2e17);">
+            <span class="optD-coll-icon"><i class="fas fa-rocket" style="color:#4ADE80;"></i></span>
+            <div class="optD-coll-name">Momentum Rockets</div>
+            <div class="optD-coll-desc">Stocks with RSI + MACD + Volume all firing together</div>
+            <div class="optD-coll-count"><i class="fas fa-chart-line"></i> 9 setups live</div>
+          </div>
+          <div class="optD-coll-card" style="background:linear-gradient(135deg, #1a3a5c, #0d1e2e);">
+            <span class="optD-coll-icon"><i class="fas fa-bolt" style="color:#60A5FA;"></i></span>
+            <div class="optD-coll-name">Breakout Warriors</div>
+            <div class="optD-coll-desc">Breaking resistance, 52W highs, range expansion plays</div>
+            <div class="optD-coll-count"><i class="fas fa-chart-line"></i> 12 setups live</div>
+          </div>
+          <div class="optD-coll-card" style="background:linear-gradient(135deg, #5c1a4a, #2e0d25);">
+            <span class="optD-coll-icon"><i class="fas fa-undo" style="color:#F472B6;"></i></span>
+            <div class="optD-coll-name">Reversal Plays</div>
+            <div class="optD-coll-desc">Oversold bounces, hammer candles at key support zones</div>
+            <div class="optD-coll-count"><i class="fas fa-chart-line"></i> 6 setups live</div>
+          </div>
+          <div class="optD-coll-card" style="background:linear-gradient(135deg, #5c4a1a, #2e250d);">
+            <span class="optD-coll-icon"><i class="fas fa-shapes" style="color:#FBBF24;"></i></span>
+            <div class="optD-coll-name">Classic Patterns</div>
+            <div class="optD-coll-desc">Head & Shoulders, Cup & Handle, Triangles, Flags</div>
+            <div class="optD-coll-count"><i class="fas fa-chart-line"></i> 8 setups live</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="optD-trending">
+        <div class="optD-trend-header">
+          <div class="optD-trend-title"><i class="fas fa-fire" style="color:var(--upstox-orange);"></i> Trending Now</div>
+          <div class="optC-section-link">See All</div>
+        </div>
+
+        <div class="optD-trend-item">
+          <div class="optD-trend-rank">1</div>
+          <div class="optD-trend-info">
+            <div class="optD-trend-stock">HDFC Bank</div>
+            <div class="optD-trend-signal">52W High Breakout + MACD + Volume</div>
+          </div>
+          <div class="optD-trend-right">
+            <div class="optD-trend-conf" style="color:var(--upstox-green);">91%</div>
+            <div class="optD-trend-type">Intraday</div>
+          </div>
+        </div>
+
+        <div class="optD-trend-item">
+          <div class="optD-trend-rank">2</div>
+          <div class="optD-trend-info">
+            <div class="optD-trend-stock">TCS</div>
+            <div class="optD-trend-signal">Resistance Break + Volume Surge</div>
+          </div>
+          <div class="optD-trend-right">
+            <div class="optD-trend-conf" style="color:var(--upstox-green);">88%</div>
+            <div class="optD-trend-type">Intraday</div>
+          </div>
+        </div>
+
+        <div class="optD-trend-item">
+          <div class="optD-trend-rank">3</div>
+          <div class="optD-trend-info">
+            <div class="optD-trend-stock">Bajaj Finance</div>
+            <div class="optD-trend-signal">Double Bottom + MACD Divergence</div>
+          </div>
+          <div class="optD-trend-right">
+            <div class="optD-trend-conf" style="color:var(--upstox-green);">85%</div>
+            <div class="optD-trend-type">Swing</div>
+          </div>
+        </div>
+
+        <div class="optD-trend-item">
+          <div class="optD-trend-rank">4</div>
+          <div class="optD-trend-info">
+            <div class="optD-trend-stock">Reliance Ind.</div>
+            <div class="optD-trend-signal">Bullish Engulfing + Triangle</div>
+          </div>
+          <div class="optD-trend-right">
+            <div class="optD-trend-conf" style="color:var(--upstox-green);">82%</div>
+            <div class="optD-trend-type">BTST</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="optD-personalized">
+        <div class="optD-trend-header">
+          <div class="optD-trend-title"><i class="fas fa-user-check" style="color:var(--upstox-purple-light);"></i> For You</div>
+        </div>
+
+        <div class="optD-pref-chips">
+          <div class="optD-pref-chip active">Breakouts</div>
+          <div class="optD-pref-chip active">Momentum</div>
+          <div class="optD-pref-chip" onclick="this.classList.toggle('active')">Candlestick</div>
+          <div class="optD-pref-chip" onclick="this.classList.toggle('active')">Reversal</div>
+          <div class="optD-pref-chip" onclick="this.classList.toggle('active')">Volume</div>
+        </div>
+
+        <div class="optD-mini-cards">
+          <div class="optD-mini-card">
+            <div class="optD-mini-top">
+              <div class="optD-mini-stock">HDFC Bank</div>
+              <div class="optD-mini-conf" style="background:var(--upstox-green-bg);color:var(--upstox-green);">91%</div>
+            </div>
+            <div class="optD-mini-signal">52W High + MACD Cross</div>
+            <div class="optD-mini-bottom">
+              <div class="optD-mini-price">₹1,712</div>
+              <div class="optD-mini-change" style="color:var(--upstox-green);">+2.1%</div>
+            </div>
+          </div>
+
+          <div class="optD-mini-card">
+            <div class="optD-mini-top">
+              <div class="optD-mini-stock">TCS</div>
+              <div class="optD-mini-conf" style="background:var(--upstox-green-bg);color:var(--upstox-green);">88%</div>
+            </div>
+            <div class="optD-mini-signal">Resistance Break + Vol</div>
+            <div class="optD-mini-bottom">
+              <div class="optD-mini-price">₹4,128</div>
+              <div class="optD-mini-change" style="color:var(--upstox-green);">+1.8%</div>
+            </div>
+          </div>
+
+          <div class="optD-mini-card">
+            <div class="optD-mini-top">
+              <div class="optD-mini-stock">Maruti</div>
+              <div class="optD-mini-conf" style="background:var(--upstox-green-bg);color:var(--upstox-green);">84%</div>
+            </div>
+            <div class="optD-mini-signal">Flag Breakout + RSI</div>
+            <div class="optD-mini-bottom">
+              <div class="optD-mini-price">₹12,450</div>
+              <div class="optD-mini-change" style="color:var(--upstox-green);">+1.4%</div>
+            </div>
+          </div>
+
+          <div class="optD-mini-card">
+            <div class="optD-mini-top">
+              <div class="optD-mini-stock">SBI</div>
+              <div class="optD-mini-conf" style="background:var(--upstox-orange-bg);color:var(--upstox-orange);">76%</div>
+            </div>
+            <div class="optD-mini-signal">Golden Cross + Volume</div>
+            <div class="optD-mini-bottom">
+              <div class="optD-mini-price">₹842</div>
+              <div class="optD-mini-change" style="color:var(--upstox-green);">+0.8%</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="bottom-nav">
+        <div class="nav-item"><i class="fas fa-chart-pie"></i><span>Portfolio</span></div>
+        <div class="nav-item"><i class="fas fa-search"></i><span>Explore</span></div>
+        <div class="nav-item active"><i class="fas fa-crosshairs"></i><span>Discover</span></div>
+        <div class="nav-item"><i class="fas fa-newspaper"></i><span>Orders</span></div>
+        <div class="nav-item"><i class="fas fa-user"></i><span>Profile</span></div>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<!-- Design Descriptions -->
+<div class="design-description" id="descA">
+  <div class="desc-title">Option A — Tab-Based Scanner</div>
+  <div class="desc-text">A clean, structured layout that traders are already familiar with from screener tools. Users start by selecting their trading style (Intraday / BTST / Swing) via tabs, then narrow results using factor-based filter chips.</div>
+  <div class="desc-subtitle">How It Works</div>
+  <div class="desc-text">
+    1. <strong>Tabs at top</strong> let users instantly switch between Intraday, BTST, Swing strategies<br>
+    2. <strong>Filter chips</strong> let them drill down by signal type — Momentum, Breakout, Patterns, Candlestick, Volume, RSI/MACD<br>
+    3. <strong>Each card</strong> shows stock name, price, confidence score bar, signal tags, and pre-computed Entry / Target / SL / Risk-Reward<br>
+    4. <strong>Sortable</strong> by confidence, R:R ratio, or recency
+  </div>
+  <div class="desc-subtitle">Pros</div>
+  <div class="desc-pros">
+    <span class="desc-pro">Familiar scanner UI pattern</span>
+    <span class="desc-pro">Fast filtering</span>
+    <span class="desc-pro">Information-dense cards</span>
+    <span class="desc-pro">Clear confidence hierarchy</span>
+  </div>
+  <div class="desc-subtitle">Considerations</div>
+  <div class="desc-pros">
+    <span class="desc-con">Can feel tool-heavy</span>
+    <span class="desc-con">Less engaging for casual users</span>
+  </div>
+</div>
+
+<div class="design-description" id="descB" style="display:none;">
+  <div class="desc-title">Option B — Live Signal Feed</div>
+  <div class="desc-text">A social-media-style real-time feed of trade signals. Each signal card is rich — showing the stock, direction, confidence ring, contributing factors, trade levels, and quick action buttons. Feels alive with the "Live" indicator.</div>
+  <div class="desc-subtitle">How It Works</div>
+  <div class="desc-text">
+    1. <strong>Live badge</strong> at top creates urgency — signals are appearing in real-time<br>
+    2. <strong>Strategy pills</strong> toggle between Intraday / BTST / Swing / Trending<br>
+    3. <strong>Signal cards</strong> show Bullish/Bearish badges, circular confidence meter, factor breakdown, and trade levels<br>
+    4. <strong>Action bar</strong> at bottom of each card — Save, View Chart, or Trade directly<br>
+    5. Scrolling down = more signals, like a feed
+  </div>
+  <div class="desc-subtitle">Pros</div>
+  <div class="desc-pros">
+    <span class="desc-pro">Engaging feed format</span>
+    <span class="desc-pro">Visual confidence meter</span>
+    <span class="desc-pro">One-tap trading</span>
+    <span class="desc-pro">Real-time feel</span>
+    <span class="desc-pro">Bullish/Bearish clarity</span>
+  </div>
+  <div class="desc-subtitle">Considerations</div>
+  <div class="desc-pros">
+    <span class="desc-con">Cards take more vertical space</span>
+    <span class="desc-con">Fewer visible at once</span>
+  </div>
+</div>
+
+<div class="design-description" id="descC" style="display:none;">
+  <div class="desc-title">Option C — Dashboard Overview</div>
+  <div class="desc-text">A market-intelligence dashboard that gives a bird's-eye view before drilling into specific setups. Opens with quick stats, sector heat map, then a grid of opportunities. Great for traders who want context before acting.</div>
+  <div class="desc-subtitle">How It Works</div>
+  <div class="desc-text">
+    1. <strong>Quick stats</strong> show total bullish / bearish setups and high-confidence count at a glance<br>
+    2. <strong>Sector Pulse heatmap</strong> shows which sectors are hot/cold — helps traders focus<br>
+    3. <strong>Type labels</strong> filter between All / Intraday / BTST / Swing / Breakouts / Reversals<br>
+    4. <strong>Grid cards</strong> show compact opportunity tiles with signal summary and confidence
+  </div>
+  <div class="desc-subtitle">Pros</div>
+  <div class="desc-pros">
+    <span class="desc-pro">Market context at top</span>
+    <span class="desc-pro">Sector-level insight</span>
+    <span class="desc-pro">Compact grid layout</span>
+    <span class="desc-pro">More setups visible at once</span>
+  </div>
+  <div class="desc-subtitle">Considerations</div>
+  <div class="desc-pros">
+    <span class="desc-con">Less detail per card</span>
+    <span class="desc-con">Needs drill-down for full info</span>
+  </div>
+</div>
+
+<div class="design-description" id="descD" style="display:none;">
+  <div class="desc-title">Option D — Discovery & Collections</div>
+  <div class="desc-text">An explore-first design inspired by content platforms. Instead of raw lists, opportunities are curated into thematic collections ("Momentum Rockets", "Breakout Warriors"). Trending leaderboard + personalized "For You" section make it feel intelligent.</div>
+  <div class="desc-subtitle">How It Works</div>
+  <div class="desc-text">
+    1. <strong>Search bar</strong> at top lets users search stocks, patterns, or strategies<br>
+    2. <strong>Curated Collections</strong> — horizontally scrollable themed cards grouping related setups<br>
+    3. <strong>Trending Now</strong> — ranked leaderboard of today's top setups by confidence<br>
+    4. <strong>"For You"</strong> — personalized recommendations based on user's preferred factors<br>
+    5. Filter chips in For You section let users fine-tune recommendations
+  </div>
+  <div class="desc-subtitle">Pros</div>
+  <div class="desc-pros">
+    <span class="desc-pro">Highly engaging</span>
+    <span class="desc-pro">Content-led discovery</span>
+    <span class="desc-pro">Personalization</span>
+    <span class="desc-pro">Thematic grouping</span>
+    <span class="desc-pro">Great for new traders</span>
+  </div>
+  <div class="desc-subtitle">Considerations</div>
+  <div class="desc-pros">
+    <span class="desc-con">More taps to reach trade details</span>
+    <span class="desc-con">Less direct for power traders</span>
+  </div>
+</div>
+
+<script>
+function switchDesign(opt) {
+  document.querySelectorAll('.design-option').forEach(el => el.classList.remove('active'));
+  document.querySelectorAll('.option-btn').forEach(btn => btn.classList.remove('active'));
+  document.querySelectorAll('.design-description').forEach(d => d.style.display = 'none');
+
+  document.getElementById('design' + opt).classList.add('active');
+  document.getElementById('desc' + opt).style.display = 'block';
+
+  const btns = document.querySelectorAll('.option-btn');
+  const idx = {'A':0,'B':1,'C':2,'D':3}[opt];
+  btns[idx].classList.add('active');
+
+  // Scroll phone content to top
+  document.querySelector('.phone-content').scrollTop = 0;
+}
+
+function switchTab(el) {
+  el.parentElement.querySelectorAll('.optA-tab').forEach(t => t.classList.remove('active'));
+  el.classList.add('active');
+}
+</script>
+</body>
+</html>
