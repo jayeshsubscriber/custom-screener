@@ -6,8 +6,8 @@ function App() {
   return (
     <BrowserRouter>
       <Routes>
-        <Route path="/screener" element={<StandaloneScreenerPage />} />
-        <Route path="*" element={<ScansDesktop />} />
+        <Route path="/all" element={<ScansDesktop />} />
+        <Route path="*" element={<StandaloneScreenerPage />} />
       </Routes>
     </BrowserRouter>
   );

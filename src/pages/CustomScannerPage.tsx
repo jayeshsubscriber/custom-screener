@@ -1514,7 +1514,7 @@ export function CustomScannerPage() {
         <div className="flex border-b border-border bg-background">
           {([
             { id: "standard" as const, label: "Standard" },
-            { id: "advanced" as const, label: "Advanced" },
+            // { id: "advanced" as const, label: "Advanced" },
             { id: "ai" as const, label: "AI", badge: "Soon" },
             { id: "settings" as const, label: "Settings", icon: Settings },
           ]).map((tab) => (
