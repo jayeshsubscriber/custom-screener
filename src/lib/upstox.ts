@@ -6,9 +6,20 @@
 // Use proxy in development to bypass CORS, direct URL in production
 const BASE = import.meta.env.DEV ? "/api/upstox" : "https://api.upstox.com";
 
+/** Runtime token cache — set via setUpstoxToken(), persisted in Supabase */
+let _runtimeToken: string | null = null;
+
+export function setUpstoxToken(token: string) {
+  _runtimeToken = token.trim();
+}
+
+export function getUpstoxToken(): string | null {
+  return _runtimeToken || (import.meta.env.VITE_UPSTOX_ACCESS_TOKEN as string | undefined)?.trim() || null;
+}
+
 function getToken(): string {
-  const t = import.meta.env.VITE_UPSTOX_ACCESS_TOKEN as string | undefined;
-  if (!t?.trim()) throw new Error("VITE_UPSTOX_ACCESS_TOKEN is not set");
+  const t = _runtimeToken || (import.meta.env.VITE_UPSTOX_ACCESS_TOKEN as string | undefined);
+  if (!t?.trim()) throw new Error("Upstox access token is not set. Go to Settings tab to add it.");
   return t.trim();
 }
 

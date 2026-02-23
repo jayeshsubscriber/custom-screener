@@ -573,9 +573,6 @@ export function ScansDesktop() {
             </TabsContent>
 
             <TabsContent value="custom-scanner" className="mt-0">
-              <div className="container mx-auto border-b border-border bg-muted/40 px-4 py-3 flex items-center">
-                <Badge variant="destructive" className="text-sm font-bold px-3 py-1 shadow-sm ring-1 ring-red-800/30">Static Proto</Badge>
-              </div>
               <CustomScannerPage />
             </TabsContent>
 
