@@ -124,6 +124,22 @@ export function scanMacdCrossoverInLastN(
   const sorted = [...ohlcv].sort((a, b) => a.date.localeCompare(b.date));
   const closes = sorted.map((r) => r.close);
   const macdResults = calculateMACD(closes);
+  if (macdResults.length === 0) return defaultResult;
+
+  // Require that MACD is currently in a bullish configuration
+  // (MACD line above signal and histogram non‑negative). This avoids
+  // counting very old crossovers that have already fully reversed.
+  const current = macdResults[macdResults.length - 1]!;
+  if (
+    Number.isNaN(current.macd) ||
+    Number.isNaN(current.signal) ||
+    Number.isNaN(current.histogram) ||
+    current.macd <= current.signal ||
+    current.histogram < 0
+  ) {
+    return defaultResult;
+  }
+
   const allCrossovers = detectAllCrossovers(macdResults);
 
   const fromBarIndex = Math.max(0, sorted.length - lookbackBars);

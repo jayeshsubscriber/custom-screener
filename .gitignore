@@ -13,6 +13,7 @@ dist/
 # IDE / OS
 .DS_Store
 *.log
+.claude/
 
 # Leftovers
 Technical Scanner/
