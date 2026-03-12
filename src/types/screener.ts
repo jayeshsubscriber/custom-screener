@@ -37,6 +37,7 @@ export interface QueryState {
   name: string;
   universe: string;
   groups: GroupState[];
+  description?: string;
 }
 
 export interface IndicatorColumn {

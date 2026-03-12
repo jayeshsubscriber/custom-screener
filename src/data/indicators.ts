@@ -470,6 +470,7 @@ export const TIMEFRAMES = [
   { value: "30m", label: "30 min" },
   { value: "1h", label: "1 hour" },
   { value: "1d", label: "Daily" },
+  { value: "1M", label: "Monthly" },
   { value: "1w", label: "Weekly" },
 ];
 

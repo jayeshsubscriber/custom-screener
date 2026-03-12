@@ -10,16 +10,19 @@ import { getIndicator } from "@/data/indicators";
 import { getInstrumentList, type Instrument } from "@/lib/scannerDataPipeline";
 
 /** Map of timeframe UI values → which Supabase table to query */
-const TIMEFRAME_TABLE: Record<string, "stock_candles_1d" | "stock_candles_15m"> = {
+const TIMEFRAME_TABLE: Record<string, "stock_candles_1d" | "stock_candles_15m" | "stock_candles_1m"> = {
   "1d": "stock_candles_1d",
   "15m": "stock_candles_15m",
+  "1M": "stock_candles_1m",
 };
+
+type CandleTable = "stock_candles_1d" | "stock_candles_15m" | "stock_candles_1m";
 
 /** Load all OHLCV rows for a given symbol from the correct table.
  *  Uses .limit(5000) to override Supabase's default 1000-row cap. */
 async function loadOhlcv(
   symbol: string,
-  table: "stock_candles_1d" | "stock_candles_15m"
+  table: CandleTable
 ): Promise<OhlcvRow[]> {
   if (!supabase) return [];
 
@@ -33,6 +36,24 @@ async function loadOhlcv(
     if (error || !data) return [];
     return data.map((r) => ({
       date: r.date as string,
+      open: Number(r.open),
+      high: Number(r.high),
+      low: Number(r.low),
+      close: Number(r.close),
+      volume: Number(r.volume),
+    }));
+  }
+
+  if (table === "stock_candles_1m") {
+    const { data, error } = await supabase
+      .from(table)
+      .select("month, open, high, low, close, volume")
+      .eq("symbol", symbol)
+      .order("month", { ascending: true })
+      .limit(500);
+    if (error || !data) return [];
+    return data.map((r) => ({
+      date: (r.month as string).slice(0, 10),
       open: Number(r.open),
       high: Number(r.high),
       low: Number(r.low),
@@ -155,14 +176,14 @@ export async function runCustomScan(
 
   onProgress?.({ phase: "loading_data", message: "Loading instruments...", total: 0, matched: 0 });
 
-  const instruments = await getInstrumentList();
+  const instruments = await getInstrumentList(query.universe);
   const requiredTfs = getRequiredTimeframes(query);
 
   // Validate that we only use supported timeframes
   for (const tf of requiredTfs) {
     if (!TIMEFRAME_TABLE[tf]) {
       throw new Error(
-        `Timeframe "${tf}" not yet supported. Only Daily (1d) and 15-minute (15m) are available.`
+        `Timeframe "${tf}" not yet supported. Only Daily (1d), 15-minute (15m), and Monthly (1M) are available.`
       );
     }
   }
@@ -226,7 +247,7 @@ async function evaluateStock(
     if (!evalResult.match) return null;
 
     const defaultTf = requiredTfs[0] || "1d";
-    const dailyData = ohlcvByTimeframe["1d"] ?? ohlcvByTimeframe["15m"] ?? [];
+    const dailyData = ohlcvByTimeframe["1d"] ?? ohlcvByTimeframe["15m"] ?? ohlcvByTimeframe["1M"] ?? [];
     const last = dailyData[dailyData.length - 1];
     const prev = dailyData.length >= 2 ? dailyData[dailyData.length - 2] : null;
 

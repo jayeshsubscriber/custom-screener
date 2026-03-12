@@ -25,16 +25,22 @@ export async function loadTokenFromSupabase(): Promise<boolean> {
 }
 
 export async function saveTokenToSupabase(token: string): Promise<void> {
-  if (!supabase) return;
+  if (!supabase) {
+    throw new Error(
+      "Supabase is not configured. Add VITE_SUPABASE_URL and VITE_SUPABASE_ANON_KEY to your .env file and restart the app."
+    );
+  }
   setUpstoxToken(token);
-  await supabase.from("stock_candles_meta").upsert(
+  const { error: err1 } = await supabase.from("stock_candles_meta").upsert(
     { key: TOKEN_KEY, value: token.trim() },
     { onConflict: "key" }
   );
-  await supabase.from("stock_candles_meta").upsert(
+  if (err1) throw new Error(`Failed to save token: ${err1.message}`);
+  const { error: err2 } = await supabase.from("stock_candles_meta").upsert(
     { key: TOKEN_UPDATED_KEY, value: new Date().toISOString() },
     { onConflict: "key" }
   );
+  if (err2) throw new Error(`Failed to save token timestamp: ${err2.message}`);
 }
 
 export async function getTokenStatus(): Promise<{
