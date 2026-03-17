@@ -175,6 +175,62 @@ function evalCondition(condition: ConditionState, data: OhlcvRow[]): boolean {
   return false;
 }
 
+// ─── Bar-indexed evaluation for backtesting ─────────────────────────────────
+
+export interface PrecomputedCondition {
+  conditionId: string;
+  leftVals: number[];
+  rightVals: number[] | null;
+  rightScalar: number | null;
+  rightValue2: number | null;
+  multiplier: number;
+  op: string;
+}
+
+/**
+ * Pre-compute indicator arrays for a condition so we can evaluate at any bar
+ * without re-computing indicators each time.
+ */
+export function precomputeCondition(
+  condition: ConditionState,
+  data: OhlcvRow[]
+): PrecomputedCondition | null {
+  if (!condition.leftIndicatorId || !condition.operator) return null;
+  const leftInd = getIndicator(condition.leftIndicatorId);
+  if (!leftInd) return null;
+
+  const leftVals = computeIndicator(condition.leftIndicatorId, condition.leftParams, data);
+
+  let rightVals: number[] | null = null;
+  let rightScalar: number | null = null;
+  let rightValue2: number | null = null;
+  const multiplier = condition.rightMultiplier || 1;
+  const op = condition.operator;
+
+  if (op === "detected" || op === "is_increasing" || op === "is_decreasing") {
+    // no right operand
+  } else if (condition.rightType === "indicator" && condition.rightIndicatorId) {
+    rightVals = computeIndicator(condition.rightIndicatorId, condition.rightParams, data);
+  } else {
+    rightScalar = condition.rightValue ? Number(condition.rightValue) : null;
+    if (rightScalar !== null && Number.isNaN(rightScalar)) rightScalar = null;
+    rightValue2 = condition.rightValue2 ? Number(condition.rightValue2) : null;
+  }
+
+  return { conditionId: condition.id, leftVals, rightVals, rightScalar, rightValue2, multiplier, op };
+}
+
+/**
+ * Evaluate a single pre-computed condition at a specific bar index.
+ * Used by the backtest engine for bar-by-bar simulation.
+ */
+export function evalConditionAtBar(
+  pc: PrecomputedCondition,
+  barIdx: number
+): boolean {
+  return evalOperator(pc.op, pc.leftVals, pc.rightVals, pc.rightScalar, pc.multiplier, barIdx, pc.rightValue2);
+}
+
 /**
  * Evaluate a single group: all conditions combined with AND/OR logic.
  */
